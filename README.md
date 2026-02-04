@@ -1,6 +1,8 @@
 # CF-Northwind-Sample REST API
 
-Welcome to **CF-Northwind-Sample**, a RESTful API built to interact with the classic Northwind database, running on Cloudflare's D1 database service. This API provides endpoints to interact with data related to customers, orders, products, and order details. It's designed for testing and validating REST-compliant applications.
+**CF-Northwind-Sample** is a RESTful API built to interact with the classic Northwind database, running on **Cloudflare Workers** and **D1 Database**. It exposes endpoints for managing customers, orders, and products, designed for testing and validating REST-compliant applications.
+
+This project is released under the **GNU General Public License (GPL)**, providing open-source flexibility for modification and redistribution.
 
 ## Table of Contents
 
@@ -11,12 +13,11 @@ Welcome to **CF-Northwind-Sample**, a RESTful API built to interact with the cla
 * [API Endpoints](#api-endpoints)
 * [Database Structure](#database-structure)
 * [Testing and Validation](#testing-and-validation)
+* [License](#license)
 
 ## Overview
 
-The **CF-Northwind-Sample** API is a simple RESTful service built using **SQLite** for the database, deployed in **Cloudflare's D1 database environment**. It exposes endpoints that allow you to interact with the Northwind data model, which includes entities like `Customers`, `Orders`, `Products`, and `OrderDetails`.
-
-This API is ideal for developers looking to test their RESTful applications or explore how APIs interact with relational databases in the cloud.
+The **CF-Northwind-Sample** API is a **Cloudflare Workers**-based REST API that interacts with an **SQLite**-based **D1 Database**. It provides endpoints to manage core business entities like customers, products, and orders, making it an ideal tool for testing REST APIs and cloud-based databases.
 
 ### Key Features
 
@@ -25,33 +26,33 @@ This API is ideal for developers looking to test their RESTful applications or e
   * Customers
   * Orders
   * Products
-  * Order Details
-* Built on **Cloudflare D1** database to simulate production-level database usage.
+* Built using **Cloudflare Workers** for easy deployment at the edge.
 * **REST-compliant** API endpoints with HTTP methods such as `GET`, `POST`, `PUT`, `DELETE`.
-* Sample data from the classic **Northwind** database for realistic use cases.
-* **Lightweight** and easy-to-extend API suitable for testing and development.
+* **SQLite** database powered by **Cloudflare D1** for easy management and testing.
+* **Open-source** under the **GNU General Public License (GPL)**.
 
 ## Features
 
 * **Customer Management**: Create, retrieve, update, and delete customer records.
 * **Order Management**: Handle orders, linking customers to products.
 * **Product Management**: Add, retrieve, and update product details.
-* **Order Details**: Track specific items ordered within each order.
-* **Relationships**: Foreign key constraints to enforce data integrity between entities.
+* **Lightweight and scalable**: Easy-to-use API designed to test REST-compliant applications at scale.
 
 ## Prerequisites
 
 * **Cloudflare Account**: You will need a Cloudflare account to deploy to D1.
 * **D1 Database**: The API uses Cloudflare's **D1 Database** for storing data. Ensure your account is set up with D1.
 * **Node.js & npm**: If running locally, you’ll need Node.js (v16 or higher) installed for setting up the server.
+* **Cloudflare Workers**: The app is deployed using **Cloudflare Workers**. Ensure you have **wrangler** installed for deployment.
 
 ## Deployment
 
-### Deploying to Cloudflare
+### Deploying to Cloudflare Workers
 
 1. **Set up Cloudflare D1**:
 
-   * Follow the steps in Cloudflare's documentation to provision a **D1 database** for your account. You will need to create the database and the necessary tables (the schema is provided in this repo).
+   * Follow Cloudflare’s guide to provision a **D1 database**.
+   * Create the database and apply the schema for **Customers**, **Orders**, and **Products** (see Database Structure section).
 
 2. **Clone the repository**:
 
@@ -60,32 +61,33 @@ This API is ideal for developers looking to test their RESTful applications or e
    cd CF-Northwind-Sample
    ```
 
-3. **Configure your environment**:
-   Create a `.env` file and add the following configuration details:
+3. **Install dependencies**:
+
+   ```bash
+   npm install
+   ```
+
+4. **Configure your Cloudflare Workers**:
+
+   * Set up `wrangler.toml` and configure your environment with the D1 database details.
+   * Create a `.env` file and add the following:
 
    ```
    D1_DATABASE_ID=your_d1_database_id
    D1_API_TOKEN=your_api_token
    ```
 
-4. **Install dependencies**:
-
-   ```bash
-   npm install
-   ```
-
-5. **Deploy the API**:
-   Using Cloudflare's development tools (such as `wrangler`), deploy the API:
+5. **Deploy to Cloudflare Workers**:
 
    ```bash
    wrangler publish
    ```
 
-   This will deploy the API to Cloudflare's edge network, making it accessible globally.
+   This will deploy your API to Cloudflare’s edge network, making it globally accessible.
 
 ### Testing Locally
 
-If you'd prefer to test locally before deploying, you can use **SQLite** for local development.
+If you prefer testing the API locally, you can run it using **SQLite** instead of D1:
 
 1. **Install SQLite**:
 
@@ -99,7 +101,7 @@ If you'd prefer to test locally before deploying, you can use **SQLite** for loc
    npm run dev
    ```
 
-   This will spin up a local server running on `http://localhost:3000`.
+   This will start the server locally, typically at `http://localhost:3000`.
 
 ## API Endpoints
 
@@ -169,35 +171,13 @@ If you'd prefer to test locally before deploying, you can use **SQLite** for loc
 
   * Delete an order by ID.
 
-### Order Details
-
-* **GET** `/orderdetails`
-
-  * Retrieve all order details.
-
-* **GET** `/orderdetails/:id`
-
-  * Retrieve order details by ID.
-
-* **POST** `/orderdetails`
-
-  * Add a product to an order.
-
-* **PUT** `/orderdetails/:id`
-
-  * Update the details of a specific order item.
-
-* **DELETE** `/orderdetails/:id`
-
-  * Delete an order item by ID.
-
 ## Database Structure
 
-The API interacts with a **D1 SQLite** database structured as follows:
+The API interacts with a **SQLite** database, structured as follows:
 
 * **Customers**:
 
-  * `CustomerID` (TEXT)
+  * `CustomerID` (TEXT, Primary Key)
   * `CompanyName` (TEXT)
   * `ContactName` (TEXT)
   * `ContactTitle` (TEXT)
@@ -209,7 +189,7 @@ The API interacts with a **D1 SQLite** database structured as follows:
 
 * **Products**:
 
-  * `ProductID` (INTEGER, PRIMARY KEY AUTOINCREMENT)
+  * `ProductID` (INTEGER, Primary Key, AUTOINCREMENT)
   * `ProductName` (TEXT)
   * `SupplierID` (INTEGER)
   * `CategoryID` (INTEGER)
@@ -219,8 +199,8 @@ The API interacts with a **D1 SQLite** database structured as follows:
 
 * **Orders**:
 
-  * `OrderID` (INTEGER, PRIMARY KEY AUTOINCREMENT)
-  * `CustomerID` (TEXT, FOREIGN KEY)
+  * `OrderID` (INTEGER, Primary Key, AUTOINCREMENT)
+  * `CustomerID` (TEXT, Foreign Key)
   * `EmployeeID` (INTEGER)
   * `OrderDate` (TEXT)
   * `ShippedDate` (TEXT)
@@ -228,33 +208,28 @@ The API interacts with a **D1 SQLite** database structured as follows:
   * `ShipCity` (TEXT)
   * `ShipCountry` (TEXT)
 
-* **OrderDetails**:
-
-  * `OrderDetailID` (INTEGER, PRIMARY KEY AUTOINCREMENT)
-  * `OrderID` (INTEGER, FOREIGN KEY)
-  * `ProductID` (INTEGER, FOREIGN KEY)
-  * `Quantity` (INTEGER)
-  * `UnitPrice` (REAL)
-  * `Discount` (REAL)
-
 ## Testing and Validation
 
 ### Postman Collection
 
-You can import the Postman collection provided in this repo to test all the API endpoints in a **RESTful** manner.
+You can import the **Postman collection** to test all API endpoints.
 
-1. Download the Postman collection (`CF-Northwind-Sample.postman_collection.json`).
+1. Download the **Postman collection** (`CF-Northwind-Sample.postman_collection.json`).
 2. Import it into Postman.
-3. Run the requests against the deployed API or your local server.
+3. Test the API against your deployed instance or local server.
 
 ### Unit Testing
 
-The project includes a suite of unit tests using **Jest** and **Supertest** to ensure the API functions as expected.
+The project includes unit tests using **Jest** and **Supertest**.
 
-To run the tests locally:
+To run tests locally:
 
 ```bash
 npm test
 ```
 
-This will execute the tests and verify that all endpoints are working properly.
+This will run the test suite and ensure the API endpoints are functioning correctly.
+
+## License
+
+This project is licensed under the **GNU General Public License (GPL)**, version 3.0 or later. See the [LICENSE](LICENSE) file for full terms.
