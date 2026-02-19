@@ -1,0 +1,11 @@
+{
+  "name": "cf-northwind-sample",
+  "main": "wrangler.js",
+  "compatibility_date": "2026-02-04",
+	"d1_databases": [
+		{
+			"binding": "D1_DATABASE",
+			"database_name": "northwind_db"
+		}
+	]
+}
